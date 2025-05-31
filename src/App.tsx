@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 
 type User = {
   id: number;
+  username: string;
   name: string;
   email: string;
+  address: string;
+  phone: string;
+  website: string;
+  company: string;
 };
 
 function App() {
@@ -18,6 +23,23 @@ function App() {
     setLoading(false);
   };
 
+  const renderCell = (value: any, indent: number = 0): JSX.Element | string => {
+    if (typeof value === "object" && value !== null) {
+      return (
+        <div style={{ paddingLeft: `${indent * 10}px` }}>
+          {Object.entries(value).map(([key, val]) => (
+            <div key={key} className="text-sm">
+              <strong>{key}:</strong>{" "}
+              {typeof val === "object" && val !== null
+                ? renderCell(val, indent + 1)
+                : String(val)}
+            </div>
+          ))}
+        </div>
+      );
+    }
+    return String(value);
+  };
   useEffect(() => {
     if (data.length > 0) {
       (window as any).data = data;
@@ -50,11 +72,16 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {data.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-100">
-                  <td className="px-4 py-2 border">{user.id}</td>
-                  <td className="px-4 py-2 border">{user.name}</td>
-                  <td className="px-4 py-2 border">{user.email}</td>
+              {data.map((row, idx) => (
+                <tr key={idx} className="hover:bg-gray-100">
+                  {Object.values(row).map((val, i) => (
+                    <td
+                      key={i}
+                      className="px-4 py-2 border whitespace-pre-wrap text-left align-top"
+                    >
+                      {renderCell(val)}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>
