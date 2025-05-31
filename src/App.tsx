@@ -40,6 +40,7 @@ function App() {
     }
     return String(value);
   };
+
   useEffect(() => {
     if (data.length > 0) {
       (window as any).data = data;
